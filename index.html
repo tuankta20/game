@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<canvas id="canvas" width="600" height="800"></canvas>
+<script>
+    let cvs = document.getElementById("canvas");
+    let ctx = cvs.getContext("2d");
+
+
+    let bird = new Image();
+    let backgroud = new Image();
+    let base = new Image();
+    let pipeNorth = new Image();
+    let pipeSouth = new Image();
+
+    bird.src = "images/bird.png";
+    backgroud.src = "images/bg.png";
+    base.src = "images/4.png";
+    pipeNorth.src = "images/1.png";
+    pipeSouth.src = "images/2.png";
+
+    gap = 600;
+    let constant = pipeNorth.height + gap;
+
+    let birdX=150;
+    let birdY=150;
+
+    let gravity=7.8;
+
+    document.addEventListener("keydown",moveUp);
+
+    function moveUp() {
+        birdY -=80;
+    }
+
+    var pipe = [];
+    pipe[0] = {
+        x: cvs.width,
+        y:-400
+    }
+
+    draw();
+
+    function draw() {
+        ctx.drawImage(backgroud,0,0);
+
+        for (i=0 ;i<pipe.length;i++) {
+
+            ctx.drawImage(pipeSouth,pipe[i].x , pipe[i].y + constant);
+            ctx.drawImage(pipeNorth, pipe[i].x, pipe[i].y);
+            pipe[i].x--;
+
+            if (pipe[i].x ==  300){
+                pipe.push({
+                    x:cvs.width,
+                    y:Math.floor(Math.random()*pipeNorth.height)-pipeNorth.height
+                });
+            }
+
+            if (birdX+ bird.width >=pipe[i].x && birdX <= pipe[i].x +pipeNorth.width
+                && (birdY <= pipe[i].y +pipeNorth.height || birdY + bird.height >=
+                    pipe[i].y + constant) || birdY+bird.height >= cvs.height - base.height){
+                return alert("Game Over");
+            }
+
+
+        }
+        ctx.drawImage(base,0,cvs.height - base.height);
+        ctx.drawImage(bird,birdX,birdY)
+
+        birdY += gravity;
+        requestAnimationFrame(draw);
+
+
+
+    }
+
+
+</script>
+</body>
+</html>
